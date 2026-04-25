@@ -2,7 +2,7 @@
 
 A sophisticated full-stack academic planning and productivity system that intelligently combines subject/task management, behavior-aware mental-load estimation, adaptive scheduling algorithms, overload detection, and burnout-risk analytics.
 
-![Smart Study Planner](https://github.com/user-attachments/assets/79b607e6-a3f1-410f-8111-020d59a96d53)
+![Smart Study Planner Dashboard](https://github.com/user-attachments/assets/a1553cfb-e5f8-4b15-94f8-8e2ee615f104)
 
 ---
 
