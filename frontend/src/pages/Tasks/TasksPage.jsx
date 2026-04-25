@@ -131,8 +131,8 @@ export default function TasksPage() {
       title="Tasks"
       description="Create focused study sessions, adjust priorities, and mark completed work as momentum builds."
     >
-      <div className="page-grid">
-        <section className="panel">
+      <div className="page-grid dashboard-page-grid">
+        <section className="panel dashboard-panel dashboard-form-panel">
           <div className="section-header">
             <h3>{editingId ? 'Edit task' : 'Add task'}</h3>
           </div>
@@ -212,7 +212,7 @@ export default function TasksPage() {
           </form>
         </section>
 
-        <section className="panel">
+        <section className="panel dashboard-panel dashboard-list-panel">
           <div className="section-header">
             <h3>Task list</h3>
             <div style={{ minWidth: 220 }}>
@@ -235,9 +235,12 @@ export default function TasksPage() {
               <div className="skeleton" style={{ height: 96 }} />
             </div>
           ) : filteredTasks.length ? (
-            <div className="list">
+            <div className="list dashboard-record-list">
               {filteredTasks.map((task) => (
-                <div className={`item-card task-card-premium ${task.status === 'completed' ? 'task-complete' : ''}`} key={task._id}>
+                <div
+                  className={`item-card task-card-premium dashboard-record-card ${task.status === 'completed' ? 'task-complete' : ''}`}
+                  key={task._id}
+                >
                   <div className="item-head">
                     <div>
                       <h4 className="item-title">{task.title}</h4>

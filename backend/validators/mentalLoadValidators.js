@@ -2,8 +2,6 @@ const { body, param, query } = require('express-validator');
 
 const mentalLoadValidator = [
   body('fatigueLevel').isInt({ min: 1, max: 10 }).withMessage('Fatigue level must be between 1 and 10'),
-  body('stressLevel').isInt({ min: 1, max: 10 }).withMessage('Stress level must be between 1 and 10'),
-  body('motivationLevel').isInt({ min: 1, max: 10 }).withMessage('Motivation level must be between 1 and 10'),
   body('sleepHours').isFloat({ min: 0, max: 24 }).withMessage('Sleep hours must be between 0 and 24'),
   body('date').isISO8601().withMessage('Date must be valid')
 ];

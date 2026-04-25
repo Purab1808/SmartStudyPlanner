@@ -10,14 +10,13 @@ const passwordResetRequestSchema = new mongoose.Schema(
       trim: true,
       index: true
     },
-    otpCode: {
+    otpHash: {
       type: String,
       required: true
     },
     otpExpiresAt: {
       type: Date,
-      required: true,
-      index: true
+      required: true
     },
     otpAttempts: {
       type: Number,
@@ -26,5 +25,7 @@ const passwordResetRequestSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+passwordResetRequestSchema.index({ otpExpiresAt: 1 }, { expireAfterSeconds: 0 });
 
 module.exports = mongoose.model('PasswordResetRequest', passwordResetRequestSchema);

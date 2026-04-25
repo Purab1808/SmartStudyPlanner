@@ -5,8 +5,8 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('ssp_token'));
-  const [loading, setLoading] = useState(Boolean(localStorage.getItem('ssp_token')));
+  const [token, setToken] = useState(sessionStorage.getItem('ssp_token'));
+  const [loading, setLoading] = useState(Boolean(sessionStorage.getItem('ssp_token')));
 
   useEffect(() => {
     if (!token) {
@@ -18,6 +18,7 @@ export function AuthProvider({ children }) {
       .getProfile()
       .then(({ data }) => setUser(data.user))
       .catch(() => {
+        sessionStorage.removeItem('ssp_token');
         localStorage.removeItem('ssp_token');
         setToken(null);
         setUser(null);
@@ -26,7 +27,8 @@ export function AuthProvider({ children }) {
   }, [token]);
 
   const handleAuthSuccess = ({ token: nextToken, user: nextUser }) => {
-    localStorage.setItem('ssp_token', nextToken);
+    sessionStorage.setItem('ssp_token', nextToken);
+    localStorage.removeItem('ssp_token');
     setToken(nextToken);
     setUser(nextUser);
   };
@@ -49,6 +51,7 @@ export function AuthProvider({ children }) {
     } catch {
       // No-op if token already expired.
     } finally {
+      sessionStorage.removeItem('ssp_token');
       localStorage.removeItem('ssp_token');
       setToken(null);
       setUser(null);

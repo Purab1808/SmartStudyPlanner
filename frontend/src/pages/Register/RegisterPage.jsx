@@ -4,6 +4,9 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import FormField from '../../components/forms/FormField';
 import InlineMessage from '../../components/feedback/InlineMessage';
 import { authApi } from '../../services/api';
+import ThemeToggle from '../../components/ui/ThemeToggle.jsx';
+import AutocompleteField from '../../components/forms/AutocompleteField.jsx';
+import { indianUniversities } from '../../data/indianUniversities.js';
 
 const passwordRules = [
   'At least 8 characters',
@@ -95,6 +98,9 @@ export default function RegisterPage() {
   return (
     <div className="auth-layout">
       <section className="auth-hero">
+        <div className="auth-theme-toggle">
+          <ThemeToggle compact />
+        </div>
         <div className="auth-copy">
           <span className="eyebrow">New workspace</span>
           <h1>Build a study system that respects both deadlines and recovery.</h1>
@@ -124,7 +130,16 @@ export default function RegisterPage() {
             required
             helperText={passwordRules.join(' | ')}
           />
-          <FormField label="University" name="university" value={form.university} onChange={handleChange} required />
+          <AutocompleteField
+            label="University"
+            name="university"
+            value={form.university}
+            onChange={(value) => setForm((prev) => ({ ...prev, university: value }))}
+            options={indianUniversities}
+            required
+            placeholder=""
+            helperText="Type to filter Indian universities and select from the dropdown."
+          />
           <FormField label="Course" name="course" value={form.course} onChange={handleChange} required />
           <FormField
             label="Preferred Study Window"

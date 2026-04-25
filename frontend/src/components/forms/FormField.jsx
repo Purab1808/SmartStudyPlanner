@@ -10,6 +10,7 @@ export default function FormField({
   step,
   placeholder,
   helperText,
+  suggestions,
   full = false,
   ...rest
 }) {
@@ -37,9 +38,17 @@ export default function FormField({
           max={max}
           step={step}
           placeholder={placeholder}
+          list={suggestions?.length ? `${name}-suggestions` : undefined}
           {...rest}
         />
       )}
+      {suggestions?.length ? (
+        <datalist id={`${name}-suggestions`}>
+          {suggestions.map((suggestion) => (
+            <option key={suggestion} value={suggestion} />
+          ))}
+        </datalist>
+      ) : null}
       {helperText ? <small className="field-helper">{helperText}</small> : null}
     </div>
   );

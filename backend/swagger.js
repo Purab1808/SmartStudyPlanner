@@ -71,7 +71,7 @@ const options = {
       schemas: {
         RegisterRequest: {
           type: 'object',
-          required: ['name', 'email', 'password'],
+          required: ['name', 'email', 'password', 'university', 'course', 'studyPreferences'],
           properties: {
             name: { type: 'string' },
             email: { type: 'string', format: 'email' },
@@ -91,12 +91,36 @@ const options = {
             }
           }
         },
+        VerifyOtpRequest: {
+          type: 'object',
+          required: ['email', 'otp'],
+          properties: {
+            email: { type: 'string', format: 'email' },
+            otp: { type: 'string', minLength: 6, maxLength: 6 }
+          }
+        },
         LoginRequest: {
           type: 'object',
           required: ['email', 'password'],
           properties: {
             email: { type: 'string', format: 'email' },
             password: { type: 'string' }
+          }
+        },
+        ForgotPasswordRequest: {
+          type: 'object',
+          required: ['email'],
+          properties: {
+            email: { type: 'string', format: 'email' }
+          }
+        },
+        ResetPasswordRequest: {
+          type: 'object',
+          required: ['email', 'otp', 'newPassword'],
+          properties: {
+            email: { type: 'string', format: 'email' },
+            otp: { type: 'string', minLength: 6, maxLength: 6 },
+            newPassword: { type: 'string', minLength: 8 }
           }
         },
         UpdateProfileRequest: {
@@ -143,13 +167,18 @@ const options = {
             priority: { type: 'integer', minimum: 1, maximum: 5 }
           }
         },
+        RescheduleTaskRequest: {
+          type: 'object',
+          required: ['deadline'],
+          properties: {
+            deadline: { type: 'string', format: 'date' }
+          }
+        },
         MentalLoadRequest: {
           type: 'object',
-          required: ['fatigueLevel', 'stressLevel', 'motivationLevel', 'sleepHours', 'date'],
+          required: ['fatigueLevel', 'sleepHours', 'date'],
           properties: {
             fatigueLevel: { type: 'integer', minimum: 1, maximum: 10 },
-            stressLevel: { type: 'integer', minimum: 1, maximum: 10 },
-            motivationLevel: { type: 'integer', minimum: 1, maximum: 10 },
             sleepHours: { type: 'number', minimum: 0, maximum: 24 },
             date: { type: 'string', format: 'date' }
           }
@@ -176,9 +205,9 @@ const options = {
           }
         }
       },
-      '/auth/register': {
+      '/auth/register/request-otp': {
         post: {
-          summary: 'Register a new user',
+          summary: 'Send registration OTP',
           tags: ['Authentication'],
           security: [],
           requestBody: jsonBody(
@@ -197,7 +226,24 @@ const options = {
             }
           ),
           responses: {
-            201: { description: 'User registered' }
+            201: { description: 'Registration OTP sent' }
+          }
+        }
+      },
+      '/auth/register/verify-otp': {
+        post: {
+          summary: 'Verify registration OTP and create account',
+          tags: ['Authentication'],
+          security: [],
+          requestBody: jsonBody(
+            { $ref: '#/components/schemas/VerifyOtpRequest' },
+            {
+              email: 'purab@example.com',
+              otp: '123456'
+            }
+          ),
+          responses: {
+            201: { description: 'User registered after OTP verification' }
           }
         }
       },
@@ -224,6 +270,40 @@ const options = {
           tags: ['Authentication'],
           responses: {
             200: { description: 'Logout response' }
+          }
+        }
+      },
+      '/auth/forgot-password/request-otp': {
+        post: {
+          summary: 'Send password reset OTP',
+          tags: ['Authentication'],
+          security: [],
+          requestBody: jsonBody(
+            { $ref: '#/components/schemas/ForgotPasswordRequest' },
+            {
+              email: 'purab@example.com'
+            }
+          ),
+          responses: {
+            200: { description: 'Password reset OTP sent' }
+          }
+        }
+      },
+      '/auth/forgot-password/reset': {
+        post: {
+          summary: 'Reset password using email OTP',
+          tags: ['Authentication'],
+          security: [],
+          requestBody: jsonBody(
+            { $ref: '#/components/schemas/ResetPasswordRequest' },
+            {
+              email: 'purab@example.com',
+              otp: '123456',
+              newPassword: 'NewStrongPass1'
+            }
+          ),
+          responses: {
+            200: { description: 'Password reset successful' }
           }
         }
       },
@@ -400,6 +480,22 @@ const options = {
           }
         }
       },
+      '/tasks/{id}/reschedule': {
+        patch: {
+          summary: 'Reschedule an unfinished overdue task',
+          tags: ['Tasks'],
+          parameters: [{ $ref: '#/components/parameters/IdParam' }],
+          requestBody: jsonBody(
+            { $ref: '#/components/schemas/RescheduleTaskRequest' },
+            {
+              deadline: '2026-04-25'
+            }
+          ),
+          responses: {
+            200: { description: 'Task rescheduled' }
+          }
+        }
+      },
       '/mental-load': {
         get: {
           summary: 'List mental load entries',
@@ -419,8 +515,6 @@ const options = {
             { $ref: '#/components/schemas/MentalLoadRequest' },
             {
               fatigueLevel: 6,
-              stressLevel: 5,
-              motivationLevel: 7,
               sleepHours: 7,
               date: '2026-03-16'
             }
@@ -536,6 +630,19 @@ const options = {
           ],
           responses: {
             200: { description: 'Productivity score returned' }
+          }
+        }
+      },
+      '/analytics/burnout-risk': {
+        get: {
+          summary: 'Get predictive burnout risk analysis',
+          tags: ['Analytics'],
+          parameters: [
+            { $ref: '#/components/parameters/StartDateQuery' },
+            { $ref: '#/components/parameters/EndDateQuery' }
+          ],
+          responses: {
+            200: { description: 'Burnout risk analytics returned' }
           }
         }
       }

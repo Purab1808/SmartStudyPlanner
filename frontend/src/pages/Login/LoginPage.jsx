@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import FormField from '../../components/forms/FormField';
 import InlineMessage from '../../components/feedback/InlineMessage';
 import { authApi } from '../../services/api';
+import ThemeToggle from '../../components/ui/ThemeToggle.jsx';
 
 const initialState = { email: '', password: '' };
 const resetInitialState = { email: '', otp: '', newPassword: '' };
@@ -101,6 +102,9 @@ export default function LoginPage() {
   return (
     <div className="auth-layout">
       <section className="auth-hero">
+        <div className="auth-theme-toggle">
+          <ThemeToggle compact />
+        </div>
         <div className="auth-copy">
           <span className="eyebrow">Academic rhythm</span>
           <h1>Plan study sessions with attention to mental energy.</h1>

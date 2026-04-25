@@ -25,9 +25,9 @@ const router = express.Router();
 
 /**
  * @swagger
- * /auth/register:
+ * /auth/register/request-otp:
  *   post:
- *     summary: Register a new user
+ *     summary: Send registration OTP for a new user
  *     security: []
  *     tags: [Authentication]
  *     requestBody:
@@ -45,7 +45,7 @@ const router = express.Router();
  *               course: { type: string, example: "Computer Science" }
  *     responses:
  *       201:
- *         description: User registered
+ *         description: Registration OTP sent
  */
 router.post('/register/request-otp', registerValidator, validateRequest, requestRegisterOtp);
 router.post('/register/verify-otp', verifyOtpValidator, validateRequest, verifyRegisterOtp);

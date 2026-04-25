@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { subjectsApi, tasksApi } from '../../services/api';
 import Button from '../ui/Button';
 import Modal from '../ui/Modal';
 import FormField from '../forms/FormField';
 import InlineMessage from '../feedback/InlineMessage';
+import ThemeToggle from '../ui/ThemeToggle';
+import PlannerLogoMark from '../branding/PlannerLogoMark';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: 'DB', hint: 'Overview' },
@@ -22,6 +24,7 @@ const getApiError = (error, fallback) =>
 export default function AppLayout({ title, description, actions, children }) {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [quickOpen, setQuickOpen] = useState(false);
   const [subjects, setSubjects] = useState([]);
   const [quickTask, setQuickTask] = useState({
@@ -101,18 +104,17 @@ export default function AppLayout({ title, description, actions, children }) {
     }
   };
 
+  const handleLogout = async () => {
+    await logout();
+    navigate('/', { replace: true });
+  };
+
   return (
-    <div className="app-shell">
-      <aside className="sidebar">
+    <div className="app-shell app-shell-dashboard">
+      <aside className="sidebar sidebar-dashboard">
         <div className="brand brand-premium">
           <div className="brand-badge brand-badge-signalbook" aria-hidden="true">
-            <span className="brand-page brand-page-left" />
-            <span className="brand-page brand-page-right" />
-            <span className="brand-spine" />
-            <span className="brand-signal seg-a" />
-            <span className="brand-signal seg-b" />
-            <span className="brand-signal seg-c" />
-            <span className="brand-signal seg-d" />
+            <PlannerLogoMark size={44} accent="green" />
           </div>
           <div className="brand-copy">
             <h1>Smart Study Planner</h1>
@@ -120,12 +122,21 @@ export default function AppLayout({ title, description, actions, children }) {
           </div>
         </div>
 
-        <div className="sidebar-panel sidebar-panel-pulse">
-          <span className="eyebrow">Current mode</span>
-          <h3>{currentNav.label}</h3>
-          <p className="sidebar-note">
-            {currentNav.hint}. Press <strong>N</strong> for a quick task capture.
-          </p>
+        <div className="sidebar-panel sidebar-panel-pulse sidebar-panel-dashboard">
+          <div className="current-mode-card">
+            <span className="eyebrow">Current mode</span>
+            <div className="current-mode-pill">
+              <span className="current-mode-icon" aria-hidden="true">
+                {currentNav.icon}
+              </span>
+              <div>
+                <div className="current-mode-title">{currentNav.label}</div>
+                <p className="sidebar-note">
+                  {currentNav.hint}. Press <strong>N</strong> for a quick task capture.
+                </p>
+              </div>
+            </div>
+          </div>
           <div className="pulse-meter">
             <span className="pulse-meter-bar pulse-meter-bar-a" />
             <span className="pulse-meter-bar pulse-meter-bar-b" />
@@ -154,27 +165,21 @@ export default function AppLayout({ title, description, actions, children }) {
               <div className="muted">{user?.course || 'Planner account'}</div>
             </div>
           </div>
-          <Button variant="secondary" onClick={logout}>
+          <Button variant="secondary" onClick={handleLogout}>
             Log out
           </Button>
         </div>
       </aside>
 
-      <main className="shell-main">
-        <header className="topbar">
+      <main className="shell-main shell-main-dashboard">
+        <header className="topbar topbar-dashboard">
           <div className="topbar-copy">
             <span className="eyebrow">Academic cockpit</span>
             <h2>{title}</h2>
             <p className="page-copy">{description}</p>
           </div>
           <div className="topbar-tools">
-            <div className="topbar-chip">
-              <span className="topbar-dot" />
-              <span>Focus mode active</span>
-            </div>
-            <button className="icon-btn" type="button" aria-label="Notifications">
-              3
-            </button>
+            <ThemeToggle compact />
             <Button onClick={() => setQuickOpen(true)}>Quick add task</Button>
             {actions ? <div className="actions-inline">{actions}</div> : null}
           </div>

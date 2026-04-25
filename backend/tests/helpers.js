@@ -8,10 +8,20 @@ const registerAndLogin = async (overrides = {}) => {
     password: 'StrongPass1',
     university: 'Test University',
     course: 'Engineering',
+    studyPreferences: {
+      availableDailyHours: 5,
+      preferredStudyWindow: 'evening',
+      breakPreferenceMinutes: 25
+    },
     ...overrides
   };
 
-  const response = await request(app).post('/api/auth/register').send(payload);
+  await request(app).post('/api/auth/register/request-otp').send(payload);
+
+  const response = await request(app).post('/api/auth/register/verify-otp').send({
+    email: payload.email,
+    otp: process.env.TEST_OTP_CODE
+  });
 
   return {
     token: response.body.token,

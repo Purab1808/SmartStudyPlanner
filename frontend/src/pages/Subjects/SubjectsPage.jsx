@@ -107,8 +107,8 @@ export default function SubjectsPage() {
       title="Subjects"
       description="Capture each course, its difficulty, and the exam horizon that should shape your plan."
     >
-      <div className="two-col">
-        <section className="panel">
+      <div className="two-col dashboard-page-grid">
+        <section className="panel dashboard-panel dashboard-form-panel">
           <div className="section-header">
             <h3>{editingId ? 'Edit subject' : 'Add subject'}</h3>
           </div>
@@ -135,7 +135,7 @@ export default function SubjectsPage() {
           </form>
         </section>
 
-        <section className="panel">
+        <section className="panel dashboard-panel dashboard-list-panel">
           <div className="section-header">
             <h3>Current subjects</h3>
           </div>
@@ -145,9 +145,9 @@ export default function SubjectsPage() {
               <div className="skeleton" style={{ height: 88 }} />
             </div>
           ) : subjects.length ? (
-            <div className="list">
+            <div className="list dashboard-record-list">
               {subjects.map((subject) => (
-                <div className="item-card subject-card-premium" key={subject._id}>
+                <div className="item-card subject-card-premium dashboard-record-card" key={subject._id}>
                   <div className="item-head">
                     <div>
                       <h4 className="item-title">{subject.subjectName}</h4>
@@ -169,7 +169,7 @@ export default function SubjectsPage() {
                     <Badge tone="warning">Priority {subject.priority}</Badge>
                     <Badge tone="muted">{subject.estimatedHours} hours planned</Badge>
                   </div>
-                  <div style={{ marginTop: 14 }}>
+                  <div className="dashboard-record-progress">
                     <ProgressBar value={subject.difficultyLevel} max={5} tone="violet" />
                   </div>
                 </div>

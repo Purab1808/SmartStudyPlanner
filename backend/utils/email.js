@@ -21,6 +21,10 @@ const buildTransport = () => {
 };
 
 const sendRegistrationOtp = async ({ email, name, otpCode }) => {
+  if (process.env.NODE_ENV === 'test') {
+    return;
+  }
+
   const transport = buildTransport();
   const fromName = process.env.SMTP_FROM_NAME || 'Smart Study Planner';
 
@@ -43,6 +47,10 @@ const sendRegistrationOtp = async ({ email, name, otpCode }) => {
 };
 
 const sendPasswordResetOtp = async ({ email, name, otpCode }) => {
+  if (process.env.NODE_ENV === 'test') {
+    return;
+  }
+
   const transport = buildTransport();
   const fromName = process.env.SMTP_FROM_NAME || 'Smart Study Planner';
 

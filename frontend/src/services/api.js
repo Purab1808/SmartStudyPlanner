@@ -7,7 +7,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('ssp_token');
+  const token = sessionStorage.getItem('ssp_token') || localStorage.getItem('ssp_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -58,7 +58,8 @@ export const scheduleApi = {
 export const analyticsApi = {
   studyTime: (params = {}) => api.get('/analytics/study-time', { params }),
   fatiguePattern: (params = {}) => api.get('/analytics/fatigue-pattern', { params }),
-  productivityScore: (params = {}) => api.get('/analytics/productivity-score', { params })
+  productivityScore: (params = {}) => api.get('/analytics/productivity-score', { params }),
+  burnoutRisk: (params = {}) => api.get('/analytics/burnout-risk', { params })
 };
 
 export default api;

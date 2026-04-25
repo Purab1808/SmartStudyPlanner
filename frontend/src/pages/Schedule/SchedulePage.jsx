@@ -79,8 +79,8 @@ export default function SchedulePage() {
         </button>
       ]}
     >
-      <div className="page-grid">
-        <section className="panel">
+      <div className="page-grid dashboard-page-grid">
+        <section className="panel dashboard-panel dashboard-form-panel">
           <div className="section-header">
             <h3>Generate weekly study plan</h3>
           </div>
@@ -108,14 +108,14 @@ export default function SchedulePage() {
           </form>
         </section>
 
-        <section className="panel">
+        <section className="panel dashboard-panel dashboard-list-panel">
           <div className="section-header">
             <h3>Overload warnings</h3>
           </div>
           {overload.length ? (
-            <div className="list">
+            <div className="list dashboard-record-list">
               {overload.map((day) => (
-                <div className="item-card" key={String(day.date)}>
+                <div className="item-card dashboard-record-card" key={String(day.date)}>
                   <div className="item-head">
                     <div>
                       <h4 className="item-title">{formatCompactDate(day.date)}</h4>
@@ -140,7 +140,7 @@ export default function SchedulePage() {
           )}
         </section>
 
-        <section className="panel">
+        <section className="panel dashboard-panel dashboard-list-panel">
           <div className="section-header">
             <h3>Weekly planner</h3>
           </div>

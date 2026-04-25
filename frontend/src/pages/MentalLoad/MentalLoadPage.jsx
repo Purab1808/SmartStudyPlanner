@@ -11,8 +11,6 @@ const today = new Date().toISOString().slice(0, 10);
 
 const initialForm = {
   fatigueLevel: 5,
-  stressLevel: 5,
-  motivationLevel: 5,
   sleepHours: 7,
   date: today
 };
@@ -53,11 +51,9 @@ export default function MentalLoadPage() {
       await mentalLoadApi.createOrUpdate({
         ...form,
         fatigueLevel: Number(form.fatigueLevel),
-        stressLevel: Number(form.stressLevel),
-        motivationLevel: Number(form.motivationLevel),
         sleepHours: Number(form.sleepHours)
       });
-      setMessage('Mental load saved for the selected date.');
+      setMessage('Mental load saved. Stress and motivation were estimated automatically from study behavior.');
       loadEntries();
     } catch (err) {
       setError(err?.response?.data?.message || 'Unable to save mental load');
@@ -69,7 +65,7 @@ export default function MentalLoadPage() {
   return (
     <AppLayout
       title="Mental load tracker"
-      description="Record daily fatigue, stress, motivation, and sleep so scheduling can adapt to your cognitive bandwidth."
+      description="Record fatigue and sleep. The system estimates stress and motivation automatically from your workload, completion pattern, and overload history."
     >
       <div className="two-col">
         <section className="panel">
@@ -84,8 +80,11 @@ export default function MentalLoadPage() {
             <FormField label="Date" name="date" type="date" value={form.date} onChange={handleChange} />
             <FormField label="Sleep hours" name="sleepHours" type="number" min="0" max="24" step="0.5" value={form.sleepHours} onChange={handleChange} />
             <FormField label="Fatigue level" name="fatigueLevel" type="range" min="1" max="10" value={form.fatigueLevel} onChange={handleChange} />
-            <FormField label="Stress level" name="stressLevel" type="range" min="1" max="10" value={form.stressLevel} onChange={handleChange} />
-            <FormField label="Motivation level" name="motivationLevel" type="range" min="1" max="10" value={form.motivationLevel} onChange={handleChange} full />
+            <div className="field full">
+              <div className="field-helper">
+                Stress and motivation are auto-estimated from pending work, overdue tasks, completed tasks, overloaded days, fatigue, and sleep.
+              </div>
+            </div>
             <div className="field full actions-inline">
               <button className="btn btn-primary" type="submit">
                 Save today&apos;s entry
@@ -102,8 +101,8 @@ export default function MentalLoadPage() {
             <>
               <FatigueRing value={latest.fatigueLevel} label={`Logged on ${formatDate(latest.date)}`} />
               <div className="item-meta">
-                <span className="badge badge-warning">Stress {latest.stressLevel}/10</span>
-                <span className="badge badge-success">Motivation {latest.motivationLevel}/10</span>
+                <span className="badge badge-warning">Estimated stress {latest.stressLevel}/10</span>
+                <span className="badge badge-success">Estimated motivation {latest.motivationLevel}/10</span>
                 <span className="badge badge-accent">Sleep {latest.sleepHours}h</span>
               </div>
             </>
@@ -134,8 +133,8 @@ export default function MentalLoadPage() {
                 </div>
                 <div className="item-meta">
                   <span className="badge badge-warning">Fatigue {entry.fatigueLevel}</span>
-                  <span className="badge badge-danger">Stress {entry.stressLevel}</span>
-                  <span className="badge badge-success">Motivation {entry.motivationLevel}</span>
+                  <span className="badge badge-danger">Estimated stress {entry.stressLevel}</span>
+                  <span className="badge badge-success">Estimated motivation {entry.motivationLevel}</span>
                   <span className="badge badge-accent">Sleep {entry.sleepHours}h</span>
                 </div>
               </div>
