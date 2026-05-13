@@ -4,7 +4,9 @@ const buildTransport = () => {
   const { SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS } = process.env;
 
   if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS) {
-    const error = new Error('SMTP configuration is incomplete. Set SMTP_HOST, SMTP_PORT, SMTP_USER, and SMTP_PASS.');
+    const error = new Error(
+      'SMTP configuration is incomplete. Set SMTP_HOST, SMTP_PORT, SMTP_USER, and SMTP_PASS.'
+    );
     error.statusCode = 500;
     throw error;
   }
@@ -22,38 +24,47 @@ const buildTransport = () => {
 
 const sendRegistrationOtp = async ({ email, name, otpCode }) => {
   if (process.env.NODE_ENV === 'test') {
-    return;
+    return true;
   }
 
+  // TEMPORARY TEST MODE
+  // SMTP disabled to check whether OTP route works correctly
+
+  console.log('OTP TEST MODE ACTIVE');
+  console.log({
+    email,
+    name,
+    otpCode
+  });
+
+  return true;
+
+  /*
   const transport = buildTransport();
   const fromName = process.env.SMTP_FROM_NAME || 'Smart Study Planner';
 
-  // await transport.sendMail({
-  //   from: `"${fromName}" <${process.env.SMTP_USER}>`,
-  //   to: email,
-  //   subject: 'Your Smart Study Planner OTP',
-  //   text: `Hello ${name}, your verification OTP is ${otpCode}. It expires in 10 minutes.`,
-  //   html: `
-  //     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #10203e;">
-  //       <h2>Smart Study Planner</h2>
-  //       <p>Hello ${name},</p>
-  //       <p>Your registration OTP is:</p>
-  //       <div style="font-size: 32px; font-weight: 700; letter-spacing: 8px; margin: 16px 0;">${otpCode}</div>
-  //       <p>This OTP expires in 10 minutes.</p>
-  //       <p>If you did not request this, you can ignore this email.</p>
-  //     </div>
-  //   `
-  // });
-
-  return res.status(200).json({
-  success: true,
-  message: "OTP route working"
-});
+  await transport.sendMail({
+    from: `"${fromName}" <${process.env.SMTP_USER}>`,
+    to: email,
+    subject: 'Your Smart Study Planner OTP',
+    text: `Hello ${name}, your verification OTP is ${otpCode}. It expires in 10 minutes.`,
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #10203e;">
+        <h2>Smart Study Planner</h2>
+        <p>Hello ${name},</p>
+        <p>Your registration OTP is:</p>
+        <div style="font-size: 32px; font-weight: 700; letter-spacing: 8px; margin: 16px 0;">${otpCode}</div>
+        <p>This OTP expires in 10 minutes.</p>
+        <p>If you did not request this, you can ignore this email.</p>
+      </div>
+    `
+  });
+  */
 };
 
 const sendPasswordResetOtp = async ({ email, name, otpCode }) => {
   if (process.env.NODE_ENV === 'test') {
-    return;
+    return true;
   }
 
   const transport = buildTransport();
@@ -75,6 +86,11 @@ const sendPasswordResetOtp = async ({ email, name, otpCode }) => {
       </div>
     `
   });
+
+  return true;
 };
 
-module.exports = { sendRegistrationOtp, sendPasswordResetOtp };
+module.exports = {
+  sendRegistrationOtp,
+  sendPasswordResetOtp
+};
