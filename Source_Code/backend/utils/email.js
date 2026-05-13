@@ -4,9 +4,7 @@ const buildTransport = () => {
   const { SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS } = process.env;
 
   if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS) {
-    const error = new Error(
-      'SMTP configuration is incomplete. Set SMTP_HOST, SMTP_PORT, SMTP_USER, and SMTP_PASS.'
-    );
+    const error = new Error('SMTP configuration is incomplete. Set SMTP_HOST, SMTP_PORT, SMTP_USER, and SMTP_PASS.');
     error.statusCode = 500;
     throw error;
   }
@@ -24,22 +22,9 @@ const buildTransport = () => {
 
 const sendRegistrationOtp = async ({ email, name, otpCode }) => {
   if (process.env.NODE_ENV === 'test') {
-    return true;
+    return;
   }
 
-  // TEMPORARY TEST MODE
-  // SMTP disabled to check whether OTP route works correctly
-
-  console.log('OTP TEST MODE ACTIVE');
-  console.log({
-    email,
-    name,
-    otpCode
-  });
-
-  return true;
-
-  /*
   const transport = buildTransport();
   const fromName = process.env.SMTP_FROM_NAME || 'Smart Study Planner';
 
@@ -59,12 +44,11 @@ const sendRegistrationOtp = async ({ email, name, otpCode }) => {
       </div>
     `
   });
-  */
 };
 
 const sendPasswordResetOtp = async ({ email, name, otpCode }) => {
   if (process.env.NODE_ENV === 'test') {
-    return true;
+    return;
   }
 
   const transport = buildTransport();
@@ -86,11 +70,6 @@ const sendPasswordResetOtp = async ({ email, name, otpCode }) => {
       </div>
     `
   });
-
-  return true;
 };
 
-module.exports = {
-  sendRegistrationOtp,
-  sendPasswordResetOtp
-};
+module.exports = { sendRegistrationOtp, sendPasswordResetOtp };
