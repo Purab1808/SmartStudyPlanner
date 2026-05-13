@@ -1,12 +1,18 @@
+// Import React hooks for state management and side effects
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+// Import React Router for navigation links
 import { Link } from 'react-router-dom';
+// Import GSAP animation library and ScrollTrigger plugin
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+// Import logo component and theme context
 import PlannerLogoMark from '../../components/branding/PlannerLogoMark';
 import { useTheme } from '../../context/ThemeContext.jsx';
 
+// Register ScrollTrigger plugin with GSAP to enable scroll-based animations
 gsap.registerPlugin(ScrollTrigger);
 
+// Feature cards data - displays key features with icon, title and description
 const featureCards = [
   {
     title: 'Smart Schedule',
@@ -30,6 +36,7 @@ const featureCards = [
   }
 ];
 
+// Step-by-step process data - shows how users interact with the app
 const steps = [
   {
     number: '1',
@@ -57,7 +64,10 @@ const steps = [
   }
 ];
 
+// IconGlyph component - renders SVG icons based on the "type" prop
+// Contains multiple icon designs used throughout the landing page
 function IconGlyph({ type }) {
+  // Common SVG attributes for all icons
   const common = {
     viewBox: '0 0 24 24',
     fill: 'none',
@@ -67,6 +77,7 @@ function IconGlyph({ type }) {
     strokeLinejoin: 'round'
   };
 
+  // Icon SVG paths mapped by type - each icon has unique stroke paths
   const paths = {
     calendar: (
       <>
@@ -135,9 +146,12 @@ function IconGlyph({ type }) {
     )
   };
 
+  // Return SVG element with selected icon paths
   return <svg {...common}>{paths[type]}</svg>;
 }
 
+// LandingThemeToggle component - renders theme toggle button (Light/Dark mode)
+// Takes onRegister callback to track button elements for animations
 function LandingThemeToggle({ onRegister }) {
   const { theme, toggleTheme } = useTheme();
 
@@ -157,9 +171,12 @@ function LandingThemeToggle({ onRegister }) {
   );
 }
 
+// Main LandingPage component - landing page with animations, features showcase and CTAs
 export default function LandingPage() {
   const { theme } = useTheme();
+  // Track scroll state to apply sticky navigation styling
   const [navScrolled, setNavScrolled] = useState(false);
+  // Refs for GSAP animation context
   const rootRef = useRef(null);
   const heroArtRef = useRef(null);
   const deviceRef = useRef(null);
@@ -168,22 +185,28 @@ export default function LandingPage() {
   const cardRefs = useRef([]);
   const buttonRefs = useRef([]);
 
+  // Register particle elements for animation reference
   const registerParticle = (element) => {
     if (element && !particleRefs.current.includes(element)) particleRefs.current.push(element);
   };
 
+  // Register floating elements for animation reference
   const registerFloating = (element) => {
     if (element && !floatingRefs.current.includes(element)) floatingRefs.current.push(element);
   };
 
+  // Register card elements for animation reference
   const registerCard = (element) => {
     if (element && !cardRefs.current.includes(element)) cardRefs.current.push(element);
   };
 
+  // Register button elements for animation reference
   const registerButton = (element) => {
     if (element && !buttonRefs.current.includes(element)) buttonRefs.current.push(element);
   };
 
+  // useEffect - Handle scroll event to toggle navbar styling when scrolled
+  // Updates navScrolled state based on scroll position
   useEffect(() => {
     const onScroll = () => setNavScrolled(window.scrollY > 18);
     onScroll();
@@ -191,8 +214,12 @@ export default function LandingPage() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // useLayoutEffect - Initialize all GSAP animations
+  // Runs before paint to set up animations smoothly
+  // Creates GSAP context to manage all animations and their cleanup
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
+      // Animate headline words with staggered fade-in effect
       const headlineWords = gsap.utils.toArray('.headline-word');
 
       gsap.set(headlineWords, { opacity: 0, y: 42 });
@@ -204,6 +231,8 @@ export default function LandingPage() {
         ease: 'power3.out'
       });
 
+      // Animate device (mobile mockup) with floating and rotating effect
+      // Includes shadow animation that changes based on theme
       if (deviceRef.current) {
         gsap.to(deviceRef.current, {
           y: -18,
@@ -226,6 +255,8 @@ export default function LandingPage() {
         });
       }
 
+      // Animate floating elements (books, clocks, caps, notes) with subtle movement
+      // Each element has unique animation duration and direction
       floatingRefs.current.forEach((element, index) => {
         const yValues = [-14, -22, -12, -18, -10];
         const xValues = [8, -10, 6, -6, 4];
@@ -242,6 +273,8 @@ export default function LandingPage() {
         });
       });
 
+      // Animate background particles with varying opacity and scale
+      // Creates depth effect through different animation speeds
       particleRefs.current.forEach((element, index) => {
         gsap.to(element, {
           y: index % 2 === 0 ? -20 : 18,
@@ -255,6 +288,8 @@ export default function LandingPage() {
         });
       });
 
+      // Animate elements on scroll - reveals content as user scrolls down
+      // Uses ScrollTrigger for scroll-based animation triggers
       const revealTargets = gsap.utils.toArray('.reveal-on-scroll');
       revealTargets.forEach((target) => {
         gsap.fromTo(
@@ -273,6 +308,8 @@ export default function LandingPage() {
         );
       });
 
+      // Animate feature cards when they come into view
+      // Staggered entrance animation for visual interest
       gsap.from(cardRefs.current, {
         opacity: 0,
         y: 30,
@@ -285,6 +322,7 @@ export default function LandingPage() {
         }
       });
 
+      // Add hover animations to cards - lift up and add shadow on mouse enter
       cardRefs.current.forEach((card) => {
         const hoverIn = () =>
           gsap.to(card, {
@@ -309,6 +347,8 @@ export default function LandingPage() {
         card.addEventListener('mouseleave', hoverOut);
       });
 
+      // Add hover and click animations to buttons
+      // Scale effect on hover and press animation on click
       buttonRefs.current.forEach((button) => {
         const hoverIn = () =>
           gsap.to(button, {
@@ -338,6 +378,9 @@ export default function LandingPage() {
         button.addEventListener('click', press);
       });
 
+      // Add 3D perspective effect to device on mouse movement
+      // Device rotates based on mouse position within hero section
+      // Creates depth and interactivity effect
       if (heroArtRef.current && deviceRef.current) {
         const handleMove = (event) => {
           const bounds = heroArtRef.current.getBoundingClientRect();
@@ -369,6 +412,8 @@ export default function LandingPage() {
     return () => ctx.revert();
   }, [theme]);
 
+  // Smooth scroll to section function - handles navigation to page sections
+  // Accounts for navbar height offset for proper positioning
   const scrollToSection = (event, id) => {
     event.preventDefault();
     const section = document.getElementById(id);
@@ -379,6 +424,7 @@ export default function LandingPage() {
     window.scrollTo({ top, behavior: 'smooth' });
   };
 
+  // JSX Structure - Main landing page container
   return (
     <div className={`ssp-landing theme-${theme}`} ref={rootRef}>
       <div className="ssp-landing__bg">
@@ -389,6 +435,7 @@ export default function LandingPage() {
         <span className="ssp-landing__grid" />
       </div>
 
+      {/* Navigation Header - Sticky navbar with theme toggle and auth links */}
       <header className={`ssp-landing__nav ${navScrolled ? 'is-scrolled' : ''}`}>
         <Link to="/" className="ssp-landing__brand">
           <span className="ssp-landing__brand-mark">
@@ -415,6 +462,7 @@ export default function LandingPage() {
       </header>
 
       <main className="ssp-landing__main">
+        {/* Hero Section - Main headline with call-to-action and animated device mockup */}
         <section className="ssp-landing__hero">
           <div className="ssp-landing__hero-copy reveal-on-scroll">
             <span className="ssp-landing__eyebrow">Plan smarter. Study calmer.</span>
@@ -510,6 +558,7 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Features Section - Displays key product features with icons and descriptions */}
         <section id="features" className="ssp-landing__section reveal-on-scroll">
           <div className="ssp-landing__section-head">
             <span className="ssp-landing__eyebrow">Features</span>
@@ -528,6 +577,7 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* How It Works Section - Step-by-step guide showing user journey through the app */}
         <section id="how-it-works" className="ssp-landing__section reveal-on-scroll">
           <div className="ssp-landing__section-head">
             <span className="ssp-landing__eyebrow">How it works</span>
@@ -548,6 +598,7 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Benefits Section - Highlights unique value propositions and main benefits */}
         <section id="benefits" className="ssp-landing__section reveal-on-scroll">
           <div className="ssp-landing__benefit-panel" ref={registerCard}>
             <div className="ssp-landing__benefit-copy">
@@ -575,6 +626,7 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Call-to-Action Section - Final push to sign up with animated decorative elements */}
         <section id="cta" className="ssp-landing__section reveal-on-scroll">
           <div className="ssp-landing__cta-panel" ref={registerCard}>
             <div className="ssp-landing__cta-object stack-books">
