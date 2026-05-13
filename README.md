@@ -1,3 +1,17 @@
+# Submission Details
+
+| Field | Details |
+|-------|---------|
+| **Names with Roll Numbers** | Purab Vats (2210990692), Taranpreet Singh (2210992454), Tanish Singla (2210992438), Shalesh Thakur (2210992283) |
+| **Project Title** | Smart Study Planner |
+| **Project Type** | Copyright |
+| **Team Details** | Purab Vats (2210990692), Taranpreet Singh (2210992454), Tanish Singla (2210992438), Shalesh Thakur (2210992283) |
+| **Submission Status** | Waiting |
+
+![Copyright Application Status Screenshot](./screenshots/Status.png)
+
+---
+
 # Smart Study Planner with Mental Load Tracking
 
 A sophisticated full-stack academic planning and productivity system that intelligently combines subject/task management, behavior-aware mental-load estimation, adaptive scheduling algorithms, overload detection, and burnout-risk analytics.
